@@ -1,0 +1,40 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: bisque;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .container {
+    width: 90%;
+    max-width: 400px;
+    margin: 100px auto;
+    background-color:lavender;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  h1 {
+    color:rgb(53, 11, 104);
+  }
+  
+  label, select, input, button {
+    display: block;
+    margin-bottom: 15px;
+    width: 100%;
+  }
+  
+  button {
+    background-color: hsl(124, 100%, 50%);
+    color: rgb(62, 56, 56);
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
