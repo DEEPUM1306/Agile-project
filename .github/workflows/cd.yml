@@ -1,34 +1,39 @@
-name: Python Unit Tests
+name: CI/CD Pipeline
 
 on:
   push:
     branches:
-      - main  # Runs when code is pushed to the `main` branch
-  pull_request:
-    branches:
-      - main  # Runs when a PR is made to the `main` branch
+      - main
 
 jobs:
-  unit-test:
-    runs-on: ubuntu-latest  # Specifies the OS for the runner (Ubuntu in this case)
+  build:
+    runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repository's code
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      # Step 2: Set up Python environment
-      - name: Set up Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: '3.8'  # You can specify the version you need
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
 
-      # Step 3: Install dependencies
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt  # Install the dependencies listed in requirements.txt
+    - name: Install dependencies
+      run: npm install
 
-      # Step 4: Run unit tests
-      - name: Run unit tests
-        run: |
-          pytest  # This runs pytest, which will discover and run the tests
+    - name: Run unit tests
+      run: npm test
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./
