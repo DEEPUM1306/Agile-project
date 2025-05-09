@@ -1,15 +1,6 @@
-{
-  "name": "fuel-mileage-tracker",
-  "version": "1.0.0",
-  "scripts": {
-    "test": "jest"
-  },
-  "devDependencies": {
-    "jest": "^29.0.0"
-  },
-  "jest": {
-    "testMatch": [
-      "**/tests/**/*.test.js"
-    ]
-  }
+"jest": {
+  "testMatch": [
+    "**/tests/**/*.test.js"
+  ],
+  "testEnvironment": "jsdom"
 }
