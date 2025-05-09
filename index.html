@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Fuel and Mileage Tracker - Auth</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .hidden { display: none; }
+    .auth-box {
+      max-width: 400px;
+      margin: 50px auto;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #aaa;
+      background-color: #f5f5f5;
+    }
+    .auth-box h2 { margin-bottom: 20px; }
+    .auth-box input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .auth-box button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      border: none;
+      color: white;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .switch-link {
+      text-align: center;
+      margin-top: 10px;
+      cursor: pointer;
+      color: #007bff;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<!-- 🔐 Auth Forms -->
+<div id="authContainer" class="auth-box">
+  <!-- Login Form -->
+  <div id="loginForm">
+    <h2>Login</h2>
+    <input type="text" id="loginUsername" placeholder="Username" required />
+    <input type="password" id="loginPassword" placeholder="Password" required />
+    <button onclick="login()">Login</button>
+    <p class="switch-link" onclick="toggleForms('signup')">New user? Sign up</p>
+    <p id="loginError" style="color:red;"></p>
+  </div>
+
+  <!-- Signup Form -->
+  <div id="signupForm" class="hidden">
+    <h2>Create Account</h2>
+    <input type="text" id="signupUsername" placeholder="Choose a username" required />
+    <input type="password" id="signupPassword" placeholder="Choose a password" required />
+    <button onclick="signup()">Sign Up</button>
+    <p class="switch-link" onclick="toggleForms('login')">Already have an account? Login</p>
+    <p id="signupError" style="color:red;"></p>
+  </div>
+</div>
+
+<!-- ✅ Main App -->
+<div id="appContent" class="container hidden">
+  <header>
+    <h1>Fuel and Mileage Tracker</h1>
+    <p id="welcomeText"></p>
+  </header>
+
+  <!-- Registration -->
+  <section class="card">
+    <label for="username">User Name:</label>
+    <input type="text" id="username" placeholder="Enter your name">
+    <button onclick="registerUser()">Register</button>
+    <p id="welcomeMessage"></p>
+  </section>
+
+  <section class="card">
+    <label for="vehicleType">Vehicle Type:</label>
+    <select id="vehicleType">
+      <option value="Car">Car</option>
+      <option value="Bike">Bike</option>
+      <option value="Truck">Truck</option>
+      <option value="SUV">SUV</option>
+      <option value="Scooter">Scooter</option>
+      <option value="Van">Van</option>
+      <option value="Bus">Bus</option>
+    </select>
+  </section>
+
+  <section class="card">
+    <h2>Log Fuel Entry</h2>
+    <form id="trackerForm">
+      <label for="distance">Distance (in km):</label>
+      <input type="number" id="distance" required placeholder="Enter distance">
+      <label for="fuel">Fuel Used (in liters):</label>
+      <input type="number" id="fuel" required placeholder="Enter fuel used">
+      <button type="submit">Add Entry</button>
+    </form>
+  </section>
+
+  <h2 id="result"></h2>
+
+  <section class="card">
+    <h2>Fuel History</h2>
+    <table id="historyTable">
+      <thead>
+        <tr>
+          <th>Vehicle</th>
+          <th>Distance (km)</th>
+          <th>Fuel (litre)</th>
+          <th>Mileage</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <section class="card">
+    <h2>Mileage Trend</h2>
+    <canvas id="mileageChart" width="400" height="200"></canvas>
+  </section>
+
+  <section class="card">
+    <h2>Generate Mileage Report</h2>
+    <button onclick="generateReport()">Download Report (CSV)</button>
+  </section>
+
+  <section class="card">
+    <h2>Reset Data</h2>
+    <button onclick="resetData()">Reset All Data</button>
+  </section>
+</div>
+
+<script>
+  // Toggle between Login and Signup
+  function toggleForms(show) {
+    document.getElementById("loginForm").classList.toggle("hidden", show === "signup");
+    document.getElementById("signupForm").classList.toggle("hidden", show === "login");
+    document.getElementById("loginError").innerText = "";
+    document.getElementById("signupError").innerText = "";
+  }
+
+  // Signup Function
+  function signup() {
+    const username = document.getElementById("signupUsername").value.trim();
+    const password = document.getElementById("signupPassword").value;
+
+    if (!username || !password) {
+      document.getElementById("signupError").innerText = "Please fill in all fields.";
+      return;
+    }
+
+    if (localStorage.getItem(username)) {
+      document.getElementById("signupError").innerText = "Username already exists.";
+      return;
+    }
+
+    localStorage.setItem(username, password);
+    alert("Signup successful! You can now log in.");
+    toggleForms("login");
+  }
+
+  // Login Function
+  function login() {
+    const username = document.getElementById("loginUsername").value.trim();
+    const password = document.getElementById("loginPassword").value;
+
+    const storedPassword = localStorage.getItem(username);
+
+    if (storedPassword && storedPassword === password) {
+      document.getElementById("authContainer").style.display = "none";
+      document.getElementById("appContent").classList.remove("hidden");
+      document.getElementById("welcomeText").innerText = `Welcome, ${username}!`;
+    } else {
+      document.getElementById("loginError").innerText = "Invalid credentials.";
+    }
+  }
+
+  function registerUser() {
+    const name = document.getElementById("username").value;
+    document.getElementById("welcomeMessage").innerText = `Hello, ${name}!`;
+  }
+</script>
+
+<script src="script.js"></script>
+</body>
+</html>
